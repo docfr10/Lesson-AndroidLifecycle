@@ -1,18 +1,13 @@
 package com.example.lesson_androidlifecycle
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebView
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Switch
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.lesson_androidlifecycle.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     // Типы логов
@@ -24,6 +19,9 @@ class MainActivity : AppCompatActivity() {
     Error — ошибки
      */
 
+    // Свойства с поздней инициализацией для элементов пользовательского интерфейса
+    private lateinit var binding: ActivityMainBinding
+
     // Свойство для хранения информации о нажатии на кнопку
     private var buttonClick: String = ""
 
@@ -32,34 +30,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Инициализация объекта класса Binding для общего доступа ко
+        // всем объекта пользовательского интерфейса
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
         // Вызов лога информационного сообщения
         Log.i("Метод жизненного цикла", "onCreate")
 
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Создание объектов пользовательского интерфейса в коде
-        val editText = findViewById<EditText>(R.id.editTextText)
-        val textView = findViewById<TextView>(R.id.textVIew)
-        val button = findViewById<Button>(R.id.button)
-        val checkBox = findViewById<CheckBox>(R.id.checkBox)
-        val radioButton = findViewById<RadioButton>(R.id.radioButton)
-        val switch = findViewById<Switch>(R.id.switch1)
-        val webView = findViewById<WebView>(R.id.webView)
-
         // Присвоение webView ссылки на сайт
-        webView.loadUrl("http://www.yandex.ru")
+        binding.webView?.loadUrl("http://www.yandex.ru")
 
         if (savedInstanceState != null)
             buttonClick = savedInstanceState.getString("buttonClick").toString()
 
         if (buttonClick.isNotEmpty())
-            textView.text = buttonClick
+            binding.textVIew.text = buttonClick
 
         // Слушатель введенного текста в поле для ввода
 //        editText.addTextChangedListener {
@@ -67,20 +60,27 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         // Слушатель нажатий на кнопку
-        button.setOnClickListener {
-            textView.text = "На меня нажали однократно"
+        binding.button.setOnClickListener {
+            binding.textVIew.text = "На меня нажали однократно"
             buttonClick = "На меня нажали однократно"
         }
 
         // Слушатель долгих нажатий
-        button.setOnLongClickListener {
-            textView.text = "На меня нажали долго"
+        binding.button.setOnLongClickListener {
+            binding.textVIew.text = "На меня нажали долго"
             buttonClick = "На меня нажали долго"
             return@setOnLongClickListener true
         }
 
-        switch.setOnClickListener {
-            editText.isEnabled = switch.isChecked
+        binding.switch1.setOnClickListener {
+            binding.editTextText.isEnabled = binding.switch1.isChecked
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            // Создание намерения перехода на другой экран
+            val intent = Intent(this, MainActivity2::class.java)
+            // Запуск намерения
+            startActivity(intent)
         }
     }
 
@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity() {
     // Переводит активность в "спящий режим" и готовит: возобновлению работы или уничтожению
     override fun onStop() {
         super.onStop()
+
+        binding.textVIew.text = "OnStop"
+
         Log.i("Метод жизненного цикла", "onStop")
     }
 
