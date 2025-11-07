@@ -2,14 +2,17 @@ package com.example.lesson_androidlifecycle
 
 import android.os.Bundle
 import android.util.Log
+import android.webkit.WebView
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.Switch
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.addTextChangedListener
 
 class MainActivity : AppCompatActivity() {
     // Типы логов
@@ -44,6 +47,13 @@ class MainActivity : AppCompatActivity() {
         val editText = findViewById<EditText>(R.id.editTextText)
         val textView = findViewById<TextView>(R.id.textVIew)
         val button = findViewById<Button>(R.id.button)
+        val checkBox = findViewById<CheckBox>(R.id.checkBox)
+        val radioButton = findViewById<RadioButton>(R.id.radioButton)
+        val switch = findViewById<Switch>(R.id.switch1)
+        val webView = findViewById<WebView>(R.id.webView)
+
+        // Присвоение webView ссылки на сайт
+        webView.loadUrl("http://www.yandex.ru")
 
         if (savedInstanceState != null)
             buttonClick = savedInstanceState.getString("buttonClick").toString()
@@ -67,6 +77,10 @@ class MainActivity : AppCompatActivity() {
             textView.text = "На меня нажали долго"
             buttonClick = "На меня нажали долго"
             return@setOnLongClickListener true
+        }
+
+        switch.setOnClickListener {
+            editText.isEnabled = switch.isChecked
         }
     }
 
